@@ -35,7 +35,7 @@ export function Profile() {
                 bio,
                 login,
                 company,
-                followers
+                followers,
             })
         }
 

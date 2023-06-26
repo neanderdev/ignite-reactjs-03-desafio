@@ -12,7 +12,7 @@ export function Profile() {
 
             <div>
                 <Title>
-                    <h2>Neander de Souza</h2>
+                    <h1>Neander de Souza</h1>
 
                     <NavLink to="#">
                         GITHUB

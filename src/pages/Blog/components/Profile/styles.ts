@@ -12,6 +12,8 @@ export const ProfileContainer = styled.div`
   background: ${(props) => props.theme["profile"]};
 
   > div {
+    width: 100%;
+
     p {
       margin-block: 0.5rem 1.5rem;
     }

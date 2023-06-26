@@ -21,6 +21,8 @@ interface IssuesResponse {
 
 export function Blog() {
     const [issues, setIssues] = useState<Issue[]>([]);
+    const [issuesSearch, setIssuesSearch] = useState<Issue[]>([]);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
         async function fetchIssues() {
@@ -42,6 +44,20 @@ export function Blog() {
         fetchIssues();
     }, []);
 
+    useEffect(() => {
+        const regex = new RegExp("" + search.toLocaleLowerCase() + "");
+
+        const searchIssues = issues.filter(issue => {
+            if (regex.test(issue.title.toLowerCase())) {
+                return issue;
+            } else {
+                return;
+            }
+        });
+
+        setIssuesSearch(searchIssues as Issue[]);
+    }, [search, issues]);
+
     return (
         <BlogContainer>
             <Profile />
@@ -52,16 +68,30 @@ export function Blog() {
                 <span>6 publicações</span>
             </Title>
 
-            <Input placeholder="Buscar contéudo" />
+            <Input
+                placeholder="Buscar contéudo"
+                onChange={props => setSearch(props.target.value)}
+            />
 
             <Cards>
                 {
-                    issues.map(issue => (
-                        <Card
-                            key={issue.number}
-                            issue={issue}
-                        />
-                    ))
+                    issuesSearch.length === 0
+                        ? (
+                            issues.map(issue => (
+                                <Card
+                                    key={issue.number}
+                                    issue={issue}
+                                />
+                            ))
+                        )
+                        : (
+                            issuesSearch.map(issue => (
+                                <Card
+                                    key={issue.number}
+                                    issue={issue}
+                                />
+                            ))
+                        )
                 }
             </Cards>
         </BlogContainer>

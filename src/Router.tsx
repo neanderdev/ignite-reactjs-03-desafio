@@ -2,21 +2,17 @@ import { Route, Routes } from 'react-router-dom';
 
 import { DefaultLayout } from './layouts/DefaultLayout';
 
-import { Blog } from './pages/Blog';
-import { Post } from './pages/Post';
-import { Repository } from './pages/Repository';
-
 export function Router() {
     return (
         <Routes>
             <Route path="/" element={<DefaultLayout />}>
-                <Route path="/" element={<Blog />} />
+                <Route path="/" />
 
-                <Route path="/repository" element={<Repository />} />
+                <Route path=":user" />
 
-                <Route path="/post">
-                    <Route path=":issueId" element={<Post />} />
-                </Route>
+                <Route path=":user/:repository" />
+
+                <Route path=":user/:repository/:issue" />
             </Route>
         </Routes>
     );

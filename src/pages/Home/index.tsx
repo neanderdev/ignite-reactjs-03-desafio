@@ -2,15 +2,15 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { api } from '../../lib/axios';
 
+import { Banner } from '../../components/Banner';
 import { Card } from '../../components/Card';
-import { InfoBanner } from '../../components/InfoBanner';
 import { Input } from '../../components/Input';
 import { Loading } from '../../components/Loading';
 
 import { Cards, HomeContainer } from './styles';
 
 interface UserInfo {
-    avatar_url: string;
+    avatarUrl: string;
     login: string;
 }
 
@@ -23,9 +23,9 @@ export function Home() {
     const fetchUsers = useCallback(async () => {
         const { data } = await api.get(`/search/users?q=${search}`);
 
-        const users = data.items.map((user: UserInfo) => {
+        const users = data.items.map((user: any) => {
             return {
-                avatar_url: user.avatar_url,
+                avatarUrl: user.avatar_url,
                 login: user.login
             }
         }
@@ -51,8 +51,8 @@ export function Home() {
 
     return (
         <HomeContainer>
-            <InfoBanner
-                user={{
+            <Banner
+                home={{
                     title: 'Pesquise por alguma conta do Github'
                 }}
             />
@@ -66,15 +66,16 @@ export function Home() {
                 {
                     isLoadingUsers
                         ?
-                        <Loading />
+                        <>
+                            <Loading />
+
+                            <Loading />
+                        </>
                         :
                         users.map(user =>
                             <Card
                                 key={user.login}
-                                user={{
-                                    avatarUrl: user.avatar_url,
-                                    login: user.login,
-                                }}
+                                user={user}
                             />
                         )
                 }

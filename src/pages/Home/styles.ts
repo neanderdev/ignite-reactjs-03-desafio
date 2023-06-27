@@ -2,8 +2,16 @@ import styled from "styled-components";
 
 export const HomeContainer = styled.main`
   .loading {
-    border: 1px solid;
+    height: 100px;
+    width: calc(50% - 1rem);
+
     transform: translateX(0);
+  }
+
+  @media (max-width: 900px) {
+    .loading {
+      width: 100%;
+    }
   }
 `;
 

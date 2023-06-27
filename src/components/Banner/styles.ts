@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const InfoBannerContainer = styled.div`
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
 
   width: 100%;
   padding: 2rem;
@@ -13,45 +13,28 @@ export const InfoBannerContainer = styled.div`
   box-shadow: 0 0 10px ${(props) => props.theme["profile"]};
   background: ${(props) => props.theme["profile"]};
 
-  a {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    line-height: 100%;
-    text-decoration: none;
-    text-transform: uppercase;
-
-    font-weight: bold;
-    font-size: 0.75rem;
-
-    color: ${(props) => props.theme["blue"]};
-
-    border: 1px solid transparent;
-
-    :hover {
-      transition: border-color 0.2s;
-      border-bottom-color: ${(props) => props.theme["blue"]};
-    }
-  }
-
-  > div {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    flex: 1;
-    width: 100%;
-  }
-
   p {
     margin-block: 1rem;
   }
 
   @media (max-width: 900px) {
     flex-direction: column;
-    gap: 1rem;
 
     transform: translateY(-20%);
+  }
+`;
+
+export const Main = styled.div`
+  display: flex;
+  gap: 2rem;
+
+  > div {
+    width: 100%;
+  }
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    gap: 0;
   }
 `;
 
@@ -64,13 +47,13 @@ export const Avatar = styled.img`
 
 export const NavBar = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  width: 100%;
+  margin-bottom: 2rem;
 
   button {
     display: flex;
-    align-items: center;
     gap: 0.5rem;
     cursor: pointer;
     line-height: 100%;
@@ -80,6 +63,7 @@ export const NavBar = styled.div`
     font-size: 0.75rem;
     background: none;
     color: ${(props) => props.theme["blue"]};
+    padding-bottom: 0.5rem;
 
     border: 1px solid transparent;
 
@@ -87,15 +71,28 @@ export const NavBar = styled.div`
       transition: border-color 0.2s;
       border-bottom-color: ${(props) => props.theme["blue"]};
     }
+
+    a {
+      display: flex;
+      color: ${(props) => props.theme["blue"]};
+      text-decoration: none;
+      gap: 0.5rem;
+    }
+  }
+
+  @media (max-width: 900px) {
+    margin-bottom: 0.5rem;
   }
 `;
 
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-bottom: 1.5rem;
 
   @media (max-width: 900px) {
-    margin-block: 1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0;
   }
 `;
 

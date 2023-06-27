@@ -1,14 +1,22 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faArrowUpRightFromSquare, faBuilding, faCalendarDay, faChevronLeft, faCircleDot, faStar, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpRightFromSquare, faBuilding, faCalendarDay, faChevronLeft, faCircleDot, faComment, faStar, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { format, formatDistanceToNow } from 'date-fns';
 import pt_BR from 'date-fns/locale/pt-BR';
 import { useNavigate } from 'react-router-dom';
 
-import { Avatar, Header, Info, InfoBannerContainer, NavBar } from './styles';
+import { Avatar, Header, Info, InfoBannerContainer, Main, NavBar } from './styles';
 
 type Home = {
     title: string;
+}
+
+type Issue = {
+    htmlUrl: string;
+    title: string;
+    userLogin: string;
+    comments: number;
+    createdAt: string;
 }
 
 type User = {
@@ -34,9 +42,16 @@ interface BannerProps {
     home?: Home;
     user?: User;
     repository?: Repository;
+    issue?: Issue;
 }
 
-export function Banner({ home, user, repository }: BannerProps) {
+export function Banner({ home, user, repository, issue }: BannerProps) {
+    const navigate = useNavigate();
+
+    function handleGoBack() {
+        navigate(-1)
+    }
+
     if (home) {
         return (
             <InfoBannerContainer>
@@ -48,53 +63,62 @@ export function Banner({ home, user, repository }: BannerProps) {
     if (user) {
         return (
             <InfoBannerContainer>
-                <Avatar src={user.avatarUrl} alt='' />
+                <NavBar>
+                    <button onClick={handleGoBack}>
+                        <FontAwesomeIcon icon={faChevronLeft} />
 
-                <div>
-                    <Header>
-                        <h2>{user.name}</h2>
+                        <span>Voltar</span>
+                    </button>
 
+                    <button>
                         <a target="_blanck" href={user.htmlUrl}>
                             <span>Github</span>
 
                             <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
                         </a>
-                    </Header>
+                    </button>
+                </NavBar>
 
-                    <p>{user.bio}</p>
+                <Main>
+                    <Avatar src={user.avatarUrl} alt="" />
 
-                    <Info>
-                        <div>
-                            <FontAwesomeIcon icon={faGithub} />
+                    <div>
+                        <Header>
+                            <h2>{user.name}</h2>
+                        </Header>
 
-                            {user.login}
-                        </div>
+                        <p>{user.bio}</p>
 
-                        <div>
-                            <FontAwesomeIcon icon={faBuilding} />
+                        <Info>
+                            <div>
+                                <FontAwesomeIcon icon={faGithub} />
 
-                            {user.company}
-                        </div>
+                                {user.login}
+                            </div>
 
-                        <div>
-                            <FontAwesomeIcon icon={faUserGroup} />
+                            <div>
+                                <FontAwesomeIcon icon={faBuilding} />
 
-                            {user.following}
+                                {user.company}
+                            </div>
 
-                            {' '}
+                            <div>
+                                <FontAwesomeIcon icon={faUserGroup} />
 
-                            seguidores
-                        </div>
-                    </Info>
-                </div>
+                                {user.following}
+
+                                {' '}
+
+                                seguidores
+                            </div>
+                        </Info>
+                    </div>
+                </Main>
             </InfoBannerContainer>
         );
     }
 
     if (repository) {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const navigate = useNavigate();
-
         const dateFormatted = formatDistanceToNow(new Date(repository.createdAt), {
             locale: pt_BR,
             addSuffix: true
@@ -103,55 +127,111 @@ export function Banner({ home, user, repository }: BannerProps) {
 
         return (
             <InfoBannerContainer>
-                <div>
-                    <NavBar>
-                        <button onClick={() => navigate(-1)} >
-                            <FontAwesomeIcon icon={faChevronLeft} />
+                <NavBar>
+                    <button onClick={handleGoBack}>
+                        <FontAwesomeIcon icon={faChevronLeft} />
 
-                            <span>Voltar</span>
-                        </button>
+                        <span>Voltar</span>
+                    </button>
 
+                    <button>
                         <a target="_blanck" href={repository.htmlUrl}>
                             <span>Github</span>
 
                             <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
                         </a>
-                    </NavBar>
+                    </button>
+                </NavBar>
 
-                    <Header>
-                        <h2>{repository.name}</h2>
-                    </Header>
+                <Header>
+                    <h2>{repository.name}</h2>
+                </Header>
 
-                    <p>{repository.description}</p>
+                <p>{repository.description}</p>
 
-                    <Info>
-                        <div title={dateTitle}>
-                            <FontAwesomeIcon icon={faCalendarDay} />
+                <Info>
+                    <div title={dateTitle}>
+                        <FontAwesomeIcon icon={faCalendarDay} />
 
-                            <span>{dateFormatted}</span>
-                        </div>
+                        <span>{dateFormatted}</span>
+                    </div>
 
-                        <div>
-                            <FontAwesomeIcon icon={faStar} />
+                    <div>
+                        <FontAwesomeIcon icon={faStar} />
 
-                            {repository.stargazersCount}
+                        {repository.stargazersCount}
 
-                            {' '}
+                        {' '}
 
-                            Stars
-                        </div>
+                        Stars
+                    </div>
 
-                        <div>
-                            <FontAwesomeIcon icon={faCircleDot} />
+                    <div>
+                        <FontAwesomeIcon icon={faCircleDot} />
 
-                            {repository.openIssues}
+                        {repository.openIssues}
 
-                            {' '}
+                        {' '}
 
-                            Open Issues
-                        </div>
-                    </Info>
-                </div>
+                        Open Issues
+                    </div>
+                </Info>
+            </InfoBannerContainer>
+        );
+    }
+
+    if (issue) {
+        const dateFormatted = formatDistanceToNow(new Date(issue.createdAt), {
+            locale: pt_BR,
+            addSuffix: true
+        });
+        const dateTitle = format(new Date(issue.createdAt), 'dd/MM/yyyy');
+
+        return (
+            <InfoBannerContainer>
+                <NavBar>
+                    <button onClick={handleGoBack} >
+                        <FontAwesomeIcon icon={faChevronLeft} />
+
+                        <span>Voltar</span>
+                    </button>
+
+                    <button>
+                        <a target="_blanck" href={issue.htmlUrl}>
+                            <span>Github</span>
+
+                            <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                        </a>
+                    </button>
+                </NavBar>
+
+                <Header>
+                    <h2>{issue.title}</h2>
+                </Header>
+
+                <Info>
+                    <div>
+                        <FontAwesomeIcon icon={faGithub} />
+
+                        {issue.userLogin}
+                    </div>
+
+                    <div title={dateTitle}>
+                        <FontAwesomeIcon icon={faCalendarDay} />
+
+                        <span>{dateFormatted}</span>
+                    </div>
+
+                    <div>
+                        <FontAwesomeIcon icon={faComment} />
+
+                        {issue.comments}
+
+                        {' '}
+
+                        comentários
+                    </div>
+                </Info>
             </InfoBannerContainer>
         );
     }

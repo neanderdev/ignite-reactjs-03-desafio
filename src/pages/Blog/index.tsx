@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../../lib/axios';
 
 import { Input } from '../../components/Input';
+import { Loading } from '../../components/Loading';
 import { Card } from './components/Card';
 import { Profile } from './components/Profile';
 
@@ -23,6 +24,7 @@ export function Blog() {
     const [issues, setIssues] = useState<Issue[]>([]);
     const [issuesSearch, setIssuesSearch] = useState<Issue[]>([]);
     const [search, setSearch] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         async function fetchIssues() {
@@ -39,6 +41,7 @@ export function Blog() {
             ));
 
             setIssues(issuesItems);
+            setIsLoading(false);
         }
 
         fetchIssues();
@@ -60,40 +63,45 @@ export function Blog() {
 
     return (
         <BlogContainer>
-            <Profile />
+            {
+                isLoading
+                    ? <Loading />
+                    : (
+                        <>
+                            <Profile />
 
-            <Title>
-                <h3>Publicações</h3>
+                            <Title>
+                                <h3>Publicações</h3>
 
-                <span>6 publicações</span>
-            </Title>
+                                <span>{issues.length} {issues.length <= 1 ? 'publicação' : 'publicações'} </span>
+                            </Title>
 
-            <Input
-                placeholder="Buscar contéudo"
-                onChange={props => setSearch(props.target.value)}
-            />
+                            <Input
+                                placeholder="Buscar contéudo"
+                                onChange={props => setSearch(props.target.value)}
+                            />
 
-            <Cards>
-                {
-                    issuesSearch.length === 0
-                        ? (
-                            issues.map(issue => (
-                                <Card
-                                    key={issue.number}
-                                    issue={issue}
-                                />
-                            ))
-                        )
-                        : (
-                            issuesSearch.map(issue => (
-                                <Card
-                                    key={issue.number}
-                                    issue={issue}
-                                />
-                            ))
-                        )
-                }
-            </Cards>
+                            <Cards>
+                                {issuesSearch.length === 0
+                                    ?
+                                    issues.map(issue => (
+                                        <Card
+                                            key={issue.number}
+                                            issue={issue}
+                                        />
+                                    ))
+                                    :
+                                    issuesSearch.map(issue => (
+                                        <Card
+                                            key={issue.number}
+                                            issue={issue}
+                                        />
+                                    ))
+                                }
+                            </Cards>
+                        </>
+                    )
+            }
         </BlogContainer>
     );
 }

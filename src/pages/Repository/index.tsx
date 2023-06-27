@@ -1,57 +1,75 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { api } from '../../lib/axios';
 
+import { Banner } from '../../components/Banner';
+import { Card } from '../../components/Card';
 import { Input } from '../../components/Input';
 import { Loading } from '../../components/Loading';
-import { Card } from './components/Card';
-import { Header } from './components/Header';
 
 import { BlogContainer, Cards, Title } from './styles';
 
+interface RepositoryInfo {
+    name: string;
+    createdAt: string;
+    htmlUrl: string;
+    description: string;
+    stargazersCount: number;
+    openIssues: number;
+}
+
 interface Issue {
     title: string;
-    created_at: string;
+    createdAt: string;
     body: string;
     number: number;
 }
 
-interface IssuesResponse {
-    items: Issue[];
-}
-
 export function Repository() {
-    const [issues, setIssues] = useState<Issue[]>([]);
+    const { user, repository } = useParams();
+
     const [search, setSearch] = useState('');
+    const [repositoryInfo, setRepositoryInfo] = useState({} as RepositoryInfo);
+    const [isLoadingRepositoryInfo, setIsLoadingRepositoryInfo] = useState(true);
     const [isLoadingIssues, setIsLoadingIssues] = useState(true);
-
-
+    const [issues, setIssues] = useState<Issue[]>([]);
     const [firstRender, setFirstRender] = useState(true);
 
-    const username = 'rocketseat-education';
-    const repo = 'reactjs-github-blog-challenge'
-    // const repo = 'bootcamp-gostack-desafios';
+    const fetchRepository = useCallback(async () => {
+        const { data } = await api.get(`repos/${user}/${repository}`);
+
+        setRepositoryInfo({
+            name: data.name,
+            createdAt: data.created_at,
+            htmlUrl: data.html_url,
+            description: data.description,
+            stargazersCount: data.stargazers_count,
+            openIssues: data.open_issues,
+        });
+        setIsLoadingRepositoryInfo(false);
+    }, [user, repository])
 
     const fetchIssues = useCallback(async () => {
-        const response = await api.get<IssuesResponse>(`/search/issues?q=${search}%20repo:${username}/${repo}`);
-        const { data } = response;
+        const { data } = await api.get(`/search/issues?q=${search}%20repo:${user}/${repository}`);
 
-        const issuesItems = data.items.map((issue) => (
+        const issuesItems = data.items.map((issue: any) => (
             {
                 number: issue.number,
                 title: issue.title,
-                created_at: issue.created_at,
+                createdAt: issue.created_at,
                 body: issue.body,
             }
         ));
 
         setIssues(issuesItems);
         setIsLoadingIssues(false);
-    }, [search])
+    }, [search, user, repository])
 
     useEffect(() => {
+        fetchRepository();
         fetchIssues();
-    }, [fetchIssues]);
+    }, [fetchRepository, fetchIssues]);
 
     useEffect(() => {
         setIsLoadingIssues(true);
@@ -60,7 +78,7 @@ export function Repository() {
         } else {
             const timeout = setTimeout(async () => {
                 fetchIssues();
-            }, 5000);
+            }, 3000);
 
             return () => clearTimeout(timeout);
         }
@@ -68,7 +86,15 @@ export function Repository() {
 
     return (
         <BlogContainer>
-            <Header />
+            {
+                isLoadingRepositoryInfo
+                    ?
+                    <Loading />
+                    :
+                    <Banner
+                        repository={repositoryInfo}
+                    />
+            }
 
             <Title>
                 <h3>Publicações</h3>

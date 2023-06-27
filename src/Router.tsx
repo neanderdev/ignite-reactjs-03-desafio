@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { DefaultLayout } from './layouts/DefaultLayout';
 
 import { Home } from './pages/Home';
+import { Repository } from './pages/Repository';
 import { User } from './pages/User';
 
 export function Router() {
@@ -13,7 +14,7 @@ export function Router() {
 
                 <Route path=":user" element={<User />} />
 
-                <Route path=":user/:repository" />
+                <Route path=":user/:repository" element={<Repository />} />
 
                 <Route path=":user/:repository/:issue" />
             </Route>

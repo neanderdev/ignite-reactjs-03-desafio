@@ -24,7 +24,7 @@ interface Repository {
     name: string;
     description: string;
     createdAt: string;
-    issues: number,
+    openIssues: number,
 }
 
 export function User() {
@@ -62,7 +62,7 @@ export function User() {
                 name: repository.name,
                 description: repository.description,
                 createdAt: repository.created_at,
-                issues: repository.open_issues,
+                openIssues: repository.open_issues,
             }
         });
 

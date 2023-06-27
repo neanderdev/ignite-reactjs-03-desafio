@@ -11,7 +11,9 @@ export function Router() {
             <Route path="/" element={<DefaultLayout />}>
                 <Route path="/" element={<Blog />} />
 
-                <Route path="/post" element={<Post />} />
+                <Route path="/post">
+                    <Route path=":issueId" element={<Post />} />
+                </Route>
             </Route>
         </Routes>
     );

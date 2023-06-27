@@ -64,6 +64,14 @@ export const InfoBar = styled.div`
       margin-right: 0.5rem;
       color: ${(props) => props.theme["label"]};
     }
+
+    span {
+      display: inline-block;
+
+      ::first-letter {
+        text-transform: uppercase;
+      }
+    }
   }
 
   @media (max-width: 900px) {

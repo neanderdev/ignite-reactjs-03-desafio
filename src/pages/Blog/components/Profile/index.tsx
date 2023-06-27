@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 
 import { api } from '../../../../lib/axios';
 
+import { Loading } from '../../../../components/Loading';
+
 import { Avatar, Info, ProfileContainer, Title } from './styles';
 
 interface User {
@@ -19,28 +21,33 @@ interface User {
 
 export function Profile() {
     const [user, setUser] = useState({} as User);
+    const [isLoadingUser, setIsLoadingUser] = useState(true);
 
     const username = 'neanderdev';
 
+    async function fetchUser() {
+        const { data } = await api.get(`users/${username}`);
+        const { login, avatar_url, html_url, name, company, bio, followers } = data;
+
+        setUser({
+            avatar_url,
+            name,
+            html_url,
+            bio,
+            login,
+            company,
+            followers,
+        });
+        setIsLoadingUser(false);
+    }
+
     useEffect(() => {
-        async function fetchUser() {
-            const { data } = await api.get(`users/${username}`);
-
-            const { login, avatar_url, html_url, name, company, bio, followers } = data;
-
-            setUser({
-                avatar_url,
-                name,
-                html_url,
-                bio,
-                login,
-                company,
-                followers,
-            })
-        }
-
         fetchUser();
     }, []);
+
+    if (isLoadingUser) {
+        return <Loading />
+    }
 
     return (
         <ProfileContainer>
